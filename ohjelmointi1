@@ -22,7 +22,7 @@ public class IndianaJones : PhysicsGame
     PhysicsObject aarre;
     PhysicsObject vihollinenAla;
     PhysicsObject vihollinenYla;
-    public Timer aikaLaskuri;
+    Timer aikaLaskuri = new Timer();
 
     Vector nopeusOikea = new Vector(200, 0);
     Vector nopeusVasen = new Vector(-80, 0);
@@ -39,20 +39,19 @@ public class IndianaJones : PhysicsGame
         LisaaLohkareita();
         Lohkareita();
 
+        AjastinLohkareille(RandomGen.NextInt(5, 7), Lohkareita);
+        AjastinLohkareille(RandomGen.NextInt(4, 8), LisaaLohkareita);
+
 
         Camera.Follow(Jones);
         Camera.ZoomFactor = 1.0;
         Camera.StayInLevel = true;
-        //MediaPlayer.Play("taustamusiikkia");
+        MediaPlayer.Play("taustamusiikkia");
 
         Level.Size = new Vector(2048, 1200);
-        Level.CreateBorders();
         Level.Background.FitToLevel();
         Level.Background.Image = taustaKuva;
 
-        Timer aikaLaskuri = new Timer();
-
-        double kulunutAika = aikaLaskuri.SecondCounter.Value;
         aikaLaskuri.Start();
 
         Label aikaNaytto = new Label();
@@ -64,8 +63,7 @@ public class IndianaJones : PhysicsGame
         aikaNaytto.BindTo(aikaLaskuri.SecondCounter);
         Add(aikaNaytto);
 
-        AjastinLohkareille(RandomGen.NextInt(5, 7), Lohkareita);
-        AjastinLohkareille(RandomGen.NextInt(4, 8), LisaaLohkareita);
+        
     }
 
     /// <summary>
@@ -76,62 +74,26 @@ public class IndianaJones : PhysicsGame
     void AjastinLohkareille(double jakso, Action kappale)
     {
         Timer ajastin = new Timer();
+        ajastin.Start();
         ajastin.Interval = jakso;
         ajastin.Timeout += kappale;
-
     }
-
     /// <summary>
-    /// Aliohjelma pysayttaa kellon.
+    /// Ajastimen pysaytys.
     /// </summary>
     void PysaytaAikaLaskuri()
     {
-
         aikaLaskuri.Pause();
-
-
     }
-
-    /// <summary>
-    /// Antaa pisteistä aarteen nappaamiselle.
-    /// </summary>
-    /// <param name="pisteet">Pisteiden määrä.</param>
-    //void LuoPistelaskuri(int lkm)
-    //{
-    //    IntMeter pistelaskuri;
-    //    pistelaskuri = new IntMeter(0, 0, 400);
-    //    //int pisteidenMaara = 0;
-
-    //    Label pisteNaytto = new Label();
-    //    pisteNaytto.X = Screen.Left + 200;
-    //    pisteNaytto.Y = Screen.Top - 300;
-    //    pisteNaytto.TextColor = Color.Black;
-    //    pisteNaytto.Color = Color.White;
-    //    pisteNaytto.Title = "Pisteet";
-    //    for (int i = 0; i < lkm; i++)
-    //    {
-    //        pistelaskuri.Value += 100;
-    //    }
-    //    pisteNaytto.BindTo(pistelaskuri);
-    //    Add(pisteNaytto);
-    //}
 
     /// <summary>
     /// Luo kentän, jossa on viholliset ja sankari. Mukana on myös poistuminen pelistä Esc-näppäintä painamalla.
     /// </summary>
     void LuoKentta()
-
     {
-
         Jones = Sankari(-800.0);
-        //aarre = Aarre(-300);
-        //aarre = Aarre(-100);
-        //aarre = Aarre(125);
-        aarre = Aarre(-700);
+        aarre = Aarre(900);
 
-        Camera.ZoomToLevel();
-
-        //Gravity = new Vector(0, -200);
         PhoneBackButton.Listen(ConfirmExit, "Lopeta peli");
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
@@ -223,7 +185,6 @@ public class IndianaJones : PhysicsGame
     PhysicsObject VihollinenYla(double width, double height, double x, double y) //Ylapuoleisen vihollisen luonti.
     {
         vihollinenYla = new PhysicsObject(width, height, Shape.Rectangle);
-        //vihollinen2.Mass = 10000.00;
         vihollinenYla.Restitution = 0.0;
         vihollinenYla.IgnoresCollisionResponse = true;
         vihollinenYla.X = x;
@@ -249,8 +210,6 @@ public class IndianaJones : PhysicsGame
     PhysicsObject VihollinenAla(double width, double height, double x, double y)    //Alapuoleisen vihollisen luonti.
     {
         vihollinenAla = new PhysicsObject(width, height, Shape.Rectangle);
-        //vihollinenAla.Color = Color.Yellow;
-        //vihollinen.Mass = 10000.0;
         vihollinenAla.Restitution = 0.0;
         vihollinenAla.IgnoresCollisionResponse = true;
         vihollinenAla.X = x;
